@@ -17,6 +17,7 @@ import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
 
 import net.minecraft.world.World;
+import net.minecraft.world.biome.BiomeKeys;
 
 import java.util.*;
 
@@ -94,10 +95,8 @@ public final class SongPicker {
 
 
 		// Weather
-
 		eventMap.put(SongpackEventType.RAIN, world.isRaining());
-		// TODO: snow
-		//eventMap.put(SongpackEventType.SNOW, world.sno)
+		eventMap.put(SongpackEventType.SNOW, world.isRaining() && biome.value().isCold(pos));
 
 
 
@@ -108,8 +107,8 @@ public final class SongPicker {
 		eventMap.put(SongpackEventType.MOUNTAIN, biome.isIn(BiomeTags.IS_MOUNTAIN));
 		eventMap.put(SongpackEventType.FOREST, biome.isIn(BiomeTags.IS_FOREST));
 		eventMap.put(SongpackEventType.BEACH, biome.isIn(BiomeTags.IS_BEACH));
+		eventMap.put(SongpackEventType.DESERT, biome.matchesKey(BiomeKeys.DESERT));
 		// TODO:
-		//eventMap.put(SongpackEventType.DESERT, false);
 
 		//eventMap.put(SongpackEventType.HOME, false);
 
