@@ -29,7 +29,7 @@ public class ReactiveMusic implements ModInitializer {
 
 	static String currentSong;
 	static SongpackEntry currentEntry = null;
-	
+
 	//static String nextSong;
 	static int waitForSwitchTicks = 0;
 	static int fadeOutTicks = 0;
@@ -54,9 +54,8 @@ public class ReactiveMusic implements ModInitializer {
 
 		LOGGER.info("--------------------------------------------");
 		LOGGER.info("|     Reactive Music initialization...     |");
-		LOGGER.info("|                version " + MOD_VERSION +"               |");
+		LOGGER.info("|                version " + MOD_VERSION + "               |");
 		LOGGER.info("--------------------------------------------");
-
 
 
 		ModConfig.GSON.load();
@@ -91,10 +90,6 @@ public class ReactiveMusic implements ModInitializer {
 		thread = new PlayerThread();
 
 
-
-
-
-
 		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> dispatcher.register(ClientCommandManager.literal("reactivemusic")
 				.executes(context -> {
 							MinecraftClient mc = context.getSource().getClient();
@@ -103,7 +98,6 @@ public class ReactiveMusic implements ModInitializer {
 							return 1;
 						}
 				)));
-
 
 
 	}
@@ -172,50 +166,41 @@ public class ReactiveMusic implements ModInitializer {
 
 					fadeOutTicks++;
 
-					thread.setGainPercentage(1f - (fadeOutTicks / (float)FADE_DURATION));
-				}
-				else {
+					thread.setGainPercentage(1f - (fadeOutTicks / (float) FADE_DURATION));
+				} else {
 					thread.resetPlayer();
 					fadeOutTicks = 0;
 				}
-
 			}
-
 
 			if (playNewSong) {
 				String picked = SongPicker.pickRandomSong(newEntry.songs);
-				changeCurrentSong(picked, newEntry);
+				if (picked != null && !picked.isBlank()) {
+					changeCurrentSong(picked, newEntry);
 
-				int minTickSilence = 0;
-				int maxTickSilence = 0;
+					int minTickSilence = 0;
+					int maxTickSilence = 0;
 
-				switch (ModConfig.getConfig().musicDelayLength) {
-					case SHORT -> {
-						minTickSilence = 500;
-						maxTickSilence = 1500;
+					switch (ModConfig.getConfig().musicDelayLength) {
+						case SHORT -> {
+							minTickSilence = 500;
+							maxTickSilence = 1500;
+						}
+						case NORMAL -> {
+							minTickSilence = 1000;
+							maxTickSilence = 5000;
+						}
+						case LONG -> {
+							minTickSilence = 2000;
+							maxTickSilence = 7000;
+						}
 					}
-					case NORMAL -> {
-						minTickSilence = 1000;
-						maxTickSilence = 5000;
-					}
-					case LONG -> {
-						minTickSilence = 2000;
-						maxTickSilence = 7000;
-					}
+					additionalSilence = rand.nextInt(minTickSilence, maxTickSilence);
 				}
-
-				additionalSilence = rand.nextInt(minTickSilence, maxTickSilence);
 			}
-
 		}
-
-
-
 		thread.processRealGain();
-
 	}
-
-
 
 	public static void changeCurrentSong(String song, SongpackEntry newEntry) {
 		currentSong = song;
@@ -243,7 +228,6 @@ public class ReactiveMusic implements ModInitializer {
 		additionalSilence = 0;
 
 	}
-
 
 
 
