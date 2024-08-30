@@ -31,8 +31,8 @@ public class ReactiveMusic implements ModInitializer {
 	static SongpackEntry currentEntry = null;
 
 	//static String nextSong;
-	static int waitForSwitchTicks = 0;
-	static int fadeOutTicks = 0;
+	static int waitForSwitchTicks = ModConfig.getConfig().waitforSwitch;
+	static int fadeOutTicks = ModConfig.getConfig().standardFadeout;
 	static int fadeInTicks = 0;
 	static int silenceTicks = 0;
 
@@ -128,7 +128,7 @@ public class ReactiveMusic implements ModInitializer {
 
 
 			if (currentEntry == null || newEntry.id != currentEntry.id) waitForSwitchTicks++;
-			else waitForSwitchTicks = 0;
+			else waitForSwitchTicks = ModConfig.getConfig().waitforSwitch;
 
 
 			boolean playNewSong = false;
@@ -169,7 +169,7 @@ public class ReactiveMusic implements ModInitializer {
 					thread.setGainPercentage(1f - (fadeOutTicks / (float) FADE_DURATION));
 				} else {
 					thread.resetPlayer();
-					fadeOutTicks = 0;
+					fadeOutTicks = ModConfig.getConfig().standardFadeout; ;
 				}
 			}
 
@@ -182,6 +182,10 @@ public class ReactiveMusic implements ModInitializer {
 					int maxTickSilence = 0;
 
 					switch (ModConfig.getConfig().musicDelayLength) {
+						case NO_DELAY -> {
+							minTickSilence = 1;
+							maxTickSilence = 20;
+						}
 						case SHORT -> {
 							minTickSilence = 500;
 							maxTickSilence = 1500;
