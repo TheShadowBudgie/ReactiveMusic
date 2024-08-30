@@ -49,6 +49,9 @@ public enum SongpackEventType {
     MOUNTAIN,
     DESERT,
     BEACH,
+    JUNGLE,
+    OCEAN,
+    SAVANNA,
 
 
 
