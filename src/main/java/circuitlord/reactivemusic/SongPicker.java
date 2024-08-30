@@ -11,13 +11,14 @@ import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.entity.vehicle.MinecartEntity;
 
-//import net.minecraft.registry.tag.BiomeTags;
-import net.minecraft.registry.tag.BiomeTags;
+
+import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags;
 import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
 
 import net.minecraft.world.World;
-import net.minecraft.world.biome.BiomeKeys;
+//import net.minecraft.world.biome.BiomeKeys;
 
 import java.util.*;
 
@@ -104,10 +105,13 @@ public final class SongPicker {
 
 
 
-		eventMap.put(SongpackEventType.MOUNTAIN, biome.isIn(BiomeTags.IS_MOUNTAIN));
-		eventMap.put(SongpackEventType.FOREST, biome.isIn(BiomeTags.IS_FOREST));
-		eventMap.put(SongpackEventType.BEACH, biome.isIn(BiomeTags.IS_BEACH));
-		eventMap.put(SongpackEventType.DESERT, biome.matchesKey(BiomeKeys.DESERT));
+		eventMap.put(SongpackEventType.MOUNTAIN, biome.isIn(ConventionalBiomeTags.IS_MOUNTAIN));
+		eventMap.put(SongpackEventType.FOREST, biome.isIn(ConventionalBiomeTags.IS_FOREST));
+		eventMap.put(SongpackEventType.BEACH, biome.isIn(ConventionalBiomeTags.IS_BEACH));
+		eventMap.put(SongpackEventType.DESERT, biome.isIn(ConventionalBiomeTags.IS_DESERT));
+		eventMap.put(SongpackEventType.JUNGLE, biome.isIn(ConventionalBiomeTags.IS_JUNGLE));
+		eventMap.put(SongpackEventType.SAVANNA, biome.isIn(ConventionalBiomeTags.IS_SAVANNA));
+		eventMap.put(SongpackEventType.OCEAN, biome.isIn(ConventionalBiomeTags.IS_OCEAN));
 		// TODO:
 
 		//eventMap.put(SongpackEventType.HOME, false);
