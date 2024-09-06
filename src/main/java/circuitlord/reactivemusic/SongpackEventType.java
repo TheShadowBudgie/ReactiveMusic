@@ -11,8 +11,8 @@ public enum SongpackEventType {
 
 
     // --- TIME ---
-    DAY,
-    NIGHT,
+    //DAY,
+    //NIGHT,
     SUNRISE,
     SUNSET,
 
@@ -25,7 +25,7 @@ public enum SongpackEventType {
 
     NETHER,
     END,
-    OVERWORLD,
+    //OVERWORLD,
 
     // --- world height ---
     UNDERWATER,

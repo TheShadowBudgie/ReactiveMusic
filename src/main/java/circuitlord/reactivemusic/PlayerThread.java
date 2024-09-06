@@ -59,7 +59,9 @@ public class PlayerThread extends Thread {
 	}
 
 	boolean isPlaying() {
-		return playing && !player.getComplete();
+		Boolean test;
+		test =  playing && !player.getComplete();
+		return test;
 	}
 	
 	public PlayerThread() {
@@ -83,8 +85,6 @@ public class PlayerThread extends Thread {
 					queued = false;
 
 				}
-
-
 				if(player != null && player.getAudioDevice() != null) {
 
 					// go to full volume
@@ -102,8 +102,6 @@ public class PlayerThread extends Thread {
 			e.printStackTrace();
 		}
 	}
-
-
 
 	public void resetPlayer() {
 		playing = false;
@@ -130,21 +128,7 @@ public class PlayerThread extends Thread {
 		currentSong = song;
         queued = true;
 	}
-	
-/*	public float getGain() {
-		if(player == null)
-			return gain;
-		
-		AudioDevice device = player.getAudioDevice();
-		if(device != null && device instanceof JavaSoundAudioDevice)
-			return ((JavaSoundAudioDevice) device).getGain();
-		return gain;
-	}*/
-	
-/*	public void addGain(float gain) {
-		setGain(getGain() + gain);
-	}*/
-	
+
 	public void setGainPercentage(float newGain) {
 		gainPercentage = Math.min(1.0f, Math.max(0.0f, newGain));
 	}
@@ -200,26 +184,8 @@ public class PlayerThread extends Thread {
 				}
 			}
 		}
-		
-		//if(musicGain == 0)
-		//	play(null);
 	}
 
-	
-/*	public float getRelativeVolume() {
-		return getRelativeVolume(getGain());
-	}*/
-	
-/*	public float getRelativeVolume(float gain) {
-		float width = MAX_GAIN - MIN_GAIN;
-		float rel = Math.abs(gain - MIN_GAIN);
-		return rel / Math.abs(width);
-	}*/
-
-/*	public int getFramesPlayed() {
-		return player == null ? 0 : player.getFrames();
-	}*/
-	
 	public void forceKill() {
 		try {
 			resetPlayer();

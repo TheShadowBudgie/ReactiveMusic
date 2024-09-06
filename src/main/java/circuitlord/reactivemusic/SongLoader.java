@@ -2,6 +2,7 @@
 
     import net.fabricmc.loader.api.FabricLoader;
     import org.yaml.snakeyaml.Yaml;
+    import org.yaml.snakeyaml.representer.Representer;
 
     import java.io.*;
     import java.nio.file.*;
@@ -18,6 +19,9 @@
 
         public static List<SongpackZip> availableSongpacks = new ArrayList<SongpackZip>();
 
+        public static void fetchAvailableSongs(){
+
+        }
 
         public static void fetchAvailableSongpacks() {
 
@@ -71,6 +75,7 @@
 
                         if (Files.exists(configPath)) {
                             config = loadSongpackConfig(configPath, false);
+
                         }
 
                     } catch (Exception e) {
@@ -112,7 +117,7 @@
                 activeSongpackPath = songpackZip.path;
             }
 
-            activeSongpackEmbedded = embeddedMode;
+
         }
 
 
@@ -168,16 +173,17 @@
 
             // embedded, use resources
             if (activeSongpackEmbedded) {
-                String path = "/musicpack/music/" + songName + ".mp3";
 
-                songRes.inputStream = SongLoader.class.getResourceAsStream(path);
+
+                songRes.inputStream = SongLoader.class.getResourceAsStream(songName);
 
             }
 
             // Folder in resource packs (not zipped, can just read directly)
             else if (activeSongpackPath.toFile().isDirectory()) {
 
-                Path songPath = activeSongpackPath.resolve("music").resolve(songName + ".mp3");
+
+                Path songPath = Paths.get(songName);;
 
                 if (Files.exists(songPath)) {
                     try {
@@ -220,7 +226,6 @@
             return songRes;
 
         }
-
         private static String joinTokensExceptFirst(String[] tokens) {
             String s = "";
             int i = 0;

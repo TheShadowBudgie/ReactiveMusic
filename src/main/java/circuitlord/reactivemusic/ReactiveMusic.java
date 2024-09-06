@@ -124,7 +124,7 @@ public class ReactiveMusic implements ModInitializer {
 
 
 		// If a valid event exists
-		if (newEntry != null && newEntry.songs.length > 0) {
+		if (newEntry != null) {
 
 
 			if (currentEntry == null || newEntry.id != currentEntry.id) waitForSwitchTicks++;
@@ -174,7 +174,7 @@ public class ReactiveMusic implements ModInitializer {
 			}
 
 			if (playNewSong) {
-				String picked = SongPicker.pickRandomSong(newEntry.songs);
+				String picked = SongPicker.pickRandomSong(SongPicker.getSongs(SongPicker.checkRaining, SongPicker.checkNight));
 				if (picked != null && !picked.isBlank()) {
 					changeCurrentSong(picked, newEntry);
 
