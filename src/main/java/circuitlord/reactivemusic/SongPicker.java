@@ -5,20 +5,15 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.CreditsScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.Entity;
-
 import net.minecraft.entity.passive.HorseEntity;
 import net.minecraft.entity.passive.PigEntity;
 import net.minecraft.entity.vehicle.BoatEntity;
 import net.minecraft.entity.vehicle.MinecartEntity;
-
-
-import net.fabricmc.fabric.api.biome.v1.BiomeSelectionContext;
+import net.fabricmc.fabric.api.tag.client.v1.ClientTags;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalBiomeTags;
-import net.minecraft.util.Pair;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.yaml.snakeyaml.util.ArrayUtils;
-//import net.minecraft.world.biome.BiomeKeys;
+
 
 import java.io.*;
 import java.nio.file.Path;
@@ -30,8 +25,8 @@ public final class SongPicker {
 	}
 
 	public static Map<SongpackEventType, Boolean> eventMap = new EnumMap<>(SongpackEventType.class);
-	public static Boolean checkRaining = new Boolean(null);
-	public static Boolean checkNight = new Boolean(null);
+	public static Boolean checkRaining = new Boolean(false);
+	public static Boolean checkNight = new Boolean(false);
 	public static final Random rand = new Random();
 	public static List<String> recentlyPickedSongs = new ArrayList<>();
 	public static void setNight(Boolean var){
@@ -40,6 +35,10 @@ public final class SongPicker {
 	public static void setWeather(Boolean var){
 		SongPicker.checkRaining = var;
 	}
+
+
+
+
 
 	public static void tickEventMap() {
 		MinecraftClient mc = MinecraftClient.getInstance();
@@ -56,11 +55,10 @@ public final class SongPicker {
 		// World processing
 		BlockPos pos = new BlockPos(player.getBlockPos());
 		var biome = world.getBiome(pos);
-
 		boolean underground = !world.isSkyVisible(pos);
-		var indimension = world.getRegistryKey();
-
+		var indimension = world.getRegistryKey();;
 		Entity riding = VersionHelper.GetRidingEntity(player);
+
 
 		//Time of day
 		long time = world.getTimeOfDay() % 24000;
@@ -102,13 +100,13 @@ public final class SongPicker {
 		eventMap.put(SongpackEventType.UNDERWATER, player.isSubmergedInWater());
 
 		//Biomes
-		eventMap.put(SongpackEventType.MOUNTAIN, biome.isIn(ConventionalBiomeTags.IS_MOUNTAIN));
-		eventMap.put(SongpackEventType.FOREST, biome.isIn(ConventionalBiomeTags.IS_FOREST));
-		eventMap.put(SongpackEventType.BEACH, biome.isIn(ConventionalBiomeTags.IS_BEACH));
-		eventMap.put(SongpackEventType.DESERT, biome.isIn(ConventionalBiomeTags.IS_DESERT));
-		eventMap.put(SongpackEventType.JUNGLE, biome.isIn(ConventionalBiomeTags.IS_JUNGLE));
-		eventMap.put(SongpackEventType.SAVANNA, biome.isIn(ConventionalBiomeTags.IS_SAVANNA));
-		eventMap.put(SongpackEventType.OCEAN, biome.isIn(ConventionalBiomeTags.IS_OCEAN));
+		eventMap.put(SongpackEventType.MOUNTAIN, ClientTags.isInWithLocalFallback(ConventionalBiomeTags.IS_MOUNTAIN, biome));
+		eventMap.put(SongpackEventType.FOREST, ClientTags.isInWithLocalFallback(ConventionalBiomeTags.IS_FOREST, biome));
+		eventMap.put(SongpackEventType.BEACH, ClientTags.isInWithLocalFallback(ConventionalBiomeTags.IS_BEACH, biome));
+		eventMap.put(SongpackEventType.DESERT, ClientTags.isInWithLocalFallback(ConventionalBiomeTags.IS_DESERT, biome));
+		eventMap.put(SongpackEventType.JUNGLE, ClientTags.isInWithLocalFallback(ConventionalBiomeTags.IS_JUNGLE, biome));
+		eventMap.put(SongpackEventType.SAVANNA, ClientTags.isInWithLocalFallback(ConventionalBiomeTags.IS_SAVANNA, biome));
+		eventMap.put(SongpackEventType.OCEAN, ClientTags.isInWithLocalFallback(ConventionalBiomeTags.IS_OCEAN, biome));
 
 		//If all else Fails
 		eventMap.put(SongpackEventType.GENERIC, true);
@@ -144,14 +142,15 @@ public final class SongPicker {
 	public static String[] getSongs(Boolean isRaining, Boolean isNight){
 		//Variable Declaration and initialization
 		String stringsongPath;
-		String[] songList;
+
 		String event = String.valueOf(getCurrentEntry().events[0]);
+		ReactiveMusic.LOGGER.info(event);
 		if (stringContainsItemFromList(event, SongConditions.specialEvents)){
 			if (SongLoader.activeSongpackPath == null) {
 				stringsongPath = "/musicpack/music/"+event+"/DoNotRemove.mp3";
 				File folder = new File(stringsongPath);
 				ReactiveMusic.LOGGER.error(stringsongPath);
-				return songList = new String[]{stringsongPath.toString()};
+				return new String[]{stringsongPath.toString()};
 				//return songList;
 			} else {
 				String[] songsInFolder = getSongsInFolder(new File(String.valueOf(SongConditions.getSpecialSongs(event))));
@@ -190,14 +189,15 @@ public final class SongPicker {
 	public static String[] getSongsInFolder(File filesInFolder){
 		try{
 			String[] songList;
-			File[] files = filesInFolder.listFiles(new FileFilter() {
-				@Override
-				public boolean accept(File pathname) {
-					String name = pathname.getName().toLowerCase();
-					return pathname.isFile() && name.endsWith(".mp3");
-				}
-		});
-		songList = new String[files.length];//Arrays.copyOf(files, files.length,  );
+            File[] files;
+            files = filesInFolder.listFiles(new FileFilter() {
+                @Override
+                public boolean accept(File pathname) {
+                    String name = pathname.getName().toLowerCase();
+                    return pathname.isFile() && name.endsWith(".mp3");
+                }
+            });
+            songList = new String[files.length];//Arrays.copyOf(files, files.length,  );
 			if (songList != null && songList.length > 0){
 				for (int i = 0; i < files.length; i++){
 					songList[i] = files[i].getPath();
